@@ -1,5 +1,5 @@
 # FastApi
 ### Commands
 * uvicorn books:app --reload
-* Production Mode: fastapi run books.py
-* Development Mode: fastapi dev books.py
+* Production Mode: fastapi run main.py
+* Development Mode: fastapi dev main.py
