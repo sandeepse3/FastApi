@@ -1,0 +1,23 @@
+[project]
+name = "fastapiom"
+version = "0.1.0"
+description = "Fast Api Training"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "bcrypt",
+    "cryptography",
+    "fastapi",
+    "psycopg2-binary",
+    "PyMySQL",
+    "python-jose",
+    "python-multipart",
+    "SQLAlchemy",
+    "uvicorn",
+    "passlib",
+    "pytest",
+    "httpx",
+    "pytest-asyncio",
+    "aiofiles",
+    "jinja2",
+]
