@@ -7,7 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "bcrypt",
     "cryptography",
-    "fastapi",
+    "fastapi[standard]",
     "psycopg2-binary",
     "PyMySQL",
     "python-jose",
