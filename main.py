@@ -1,15 +1,60 @@
-from fastapi import Body, FastAPI
+from typing import Optional
+
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
 
+class Book:
+    id: int
+    title: str
+    author: str
+    description: str
+    rating: int
+    published_year: int
+
+    def __init__(self, id, title, author, description, rating, published_year):
+        self.id = id
+        self.title = title
+        self.author = author
+        self.description = description
+        self.rating = rating
+        self.published_year = published_year
+
+
+# Pydantic Data Model for Data Validation
+class BookRequest(BaseModel):
+    id: Optional[int] = Field(
+        description="ID is not needed on create", default=None
+    )  # id: Optional[int] = None
+    title: str = Field(min_length=3)
+    author: str = Field(min_length=1)
+    description: str = Field(min_length=1, max_length=100)
+    rating: int = Field(gt=0, lt=6)
+    published_year: int = Field(gt=1999, lt=2031)
+
+    # Setting a default values using Model Config
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "title": "A new book",
+                "author": "codingwithsandeep",
+                "description": "A new description of a book",
+                "rating": 5,
+                "published_year": 2025,
+            }
+        }
+    }
+
+
 books = [
-    {"title": "Title One", "author": "Author One", "category": "science"},
-    {"title": "Title Two", "author": "Author Two", "category": "science"},
-    {"title": "Title Three", "author": "Author Three", "category": "history"},
-    {"title": "Title Four", "author": "Author Four", "category": "math"},
-    {"title": "Title Five", "author": "Author Five", "category": "math"},
-    {"title": "Title Six", "author": "Author Two", "category": "math"},
+    Book(1, "Computer Science Pro", "codingwithroby", "A very nice book!", 5, 2030),
+    Book(2, "Be Fast with FastAPI", "codingwithroby", "A great book!", 5, 2030),
+    Book(3, "Master Endpoints", "codingwithroby", "A awesome book!", 5, 2029),
+    Book(4, "HP1", "Author 1", "Book Description", 2, 2028),
+    Book(5, "HP2", "Author 2", "Book Description", 3, 2027),
+    Book(6, "HP3", "Author 3", "Book Description", 1, 2026),
 ]
 
 
@@ -22,55 +67,71 @@ async def home_page():
 
 # Static Path Parameter
 @app.get("/books")
-async def get_all_books():
+async def get_books():
     return books
 
-
-# Order of Path Parameters is important
-@app.get("/books/mybook")
-async def my_book():
-    return {"message": "Atomic Habits is my favorite book"}
-
-
-# Query Parameter: Filter the data in the Path Parameter
-@app.get("/books/")
-async def get_book_by_category(category: str):
+# IMP: Always keep the static path parameter above the dynamic path parameter
+# Query Parameter
+@app.get("/books/pubyear")
+async def read_by_year(pubyear: int):
     books_to_return = []
     for book in books:
-        if book.get("category").casefold() == category.casefold():
+        print(type(pubyear))
+        if book.published_year == pubyear:
             books_to_return.append(book)
     return books_to_return
-
 
 # Dynamic Path Parameter
-@app.get("/books/{book_name}")
-async def book_details(book_name: str):
+@app.get("/books/{book_id}")
+async def read_by_bookid(book_id: int):
     for book in books:
-        if book.get("title").casefold() == book_name.casefold():
+        if book.id == book_id:
             return book
-    else:
-        return {"message": f"{book_name} book details not found"}
+    return {"message": f"Book with ID {book_id} not found"}
 
 
-# IMPYou can't have two dynamic path parameters / endpoints with the same path (books)
-
-
-# Dynamic Path and Query Parameter
-@app.get("/books/{author}/")
-async def get_book_by_author_category(author: str, category: str):
+# IMP: You can't have a same endpoint / address with same request type
+# Query Parameter
+@app.get("/books/")
+async def read_by_rating(rating: int):
     books_to_return = []
     for book in books:
-        if (
-            book.get("author").casefold() == author.casefold()
-            and book.get("category").casefold() == category.casefold()
-        ):
+        if book.rating == rating:
             books_to_return.append(book)
     return books_to_return
+
+
+
 
 
 # POST Request
-# {"title": "Title Seven", "author": "Sandeep", "category": "Python"}
 @app.post("/books/create_book")
-async def create_book(new_book=Body()):
+async def create_book(book_request: BookRequest):
+    book_request.id = generate_book_id()
+    new_book = Book(**book_request.model_dump())
     books.append(new_book)
     return {"message": "Book created successfully", "book": new_book}
+
+
+def generate_book_id():
+    book_id = 1 if len(books) == 0 else books[-1].id + 1
+    return book_id
+
+
+# PUT Request
+@app.put("/books/update_book")
+async def update_book(book_request: BookRequest):
+    upd_book = Book(**book_request.model_dump())
+    for i in range(len(books)):
+        if books[i].id == upd_book.id:
+            books[i] = upd_book
+            return {"message": "Book updated successfully", "book": books[i]}
+
+
+# DELETE Request
+@app.delete("/books/delete_book")
+async def delete_book(book_id: int):
+    for i in range(len(books)):
+        if books[i].id == book_id:
+            books.pop(i)
+            return {"message": f"Book with ID {book_id} deleted successfully"}
