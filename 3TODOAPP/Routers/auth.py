@@ -1,12 +1,14 @@
 from typing import Annotated
-
 from database import SessionLocal
 from fastapi import APIRouter, Depends, status
 from models import Users
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from passlib.context import CryptContext
 
 router = APIRouter()
+
+bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class CreateUserRequest(BaseModel):
@@ -37,9 +39,11 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
         first_name=create_user_request.first_name,
         last_name=create_user_request.last_name,
         role=create_user_request.role,
-        hashed_password=create_user_request.password,
+        hashed_password=bcrypt_context.hash(create_user_request.password),
         is_active=True,
     )
 
     db.add(create_user_model)
     db.commit()
+    # return create_user_model
+    return {"message": "User created successfully", "user": create_user_model.username}

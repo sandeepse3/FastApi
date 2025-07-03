@@ -5,7 +5,7 @@ description = "Fast Api Training"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "bcrypt",
+    "bcrypt==4.0.1",
     "cryptography",
     "fastapi[standard]",
     "psycopg2-binary",
