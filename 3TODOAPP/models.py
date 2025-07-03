@@ -1,3 +1,4 @@
+# We call this models.py file because it contains the database models (tables and their relationships) for the application.
 from database import Base
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 
