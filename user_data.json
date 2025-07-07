@@ -3,6 +3,29 @@
   "email": "sandeepse3@gmail.com",
   "first_name": "Sandeep",
   "last_name": "Puttur",
-  "password": "hashed_password_here",
+  "password": "test123",
   "role": "user"
+}
+
+{
+  "title": "Learn FastAPI",
+  "description": "Because it's Awesome",
+  "priority": 5,
+  "complete": false
+}
+
+
+{
+  "title": "Learn FastAPI",
+  "description": "Because it's awesome",
+  "complete": true,
+  "priority": 5,
+  "id": 5
+}
+
+{
+
+ "query": "UPDATE public.users SET id=1 WHERE username='Sandeep';",
+ "query": "SELECT * FROM public.users ORDER BY id ASC"
+
 }
