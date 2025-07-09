@@ -37,8 +37,7 @@ async def read_users(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    # return db.query(Users).all()
-    return db.query(Users).filter(Todos.owner_id == user.get("id")).all()
+    return db.query(Users).all()
 
 
 # Section 11: 132 Get Todo (ID + User ID)
