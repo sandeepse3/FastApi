@@ -8,6 +8,15 @@
 }
 
 {
+  "username": "adsandeep",
+  "email": "psandeep.dwh@gmail.com",
+  "first_name": "Sandeep",
+  "last_name": "Puttur",
+  "password": "test123",
+  "role": "admin"
+}
+
+{
   "title": "Learn FastAPI",
   "description": "Because it's Awesome",
   "priority": 5,
