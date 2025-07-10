@@ -17,6 +17,16 @@
 }
 
 {
+  "username": "sandeep",
+  "email": "sandeepse3@gmail.com",
+  "first_name": "Rishith",
+  "last_name": "PS",
+  "password": "test123",
+  "role": "user",
+  "phone_number": "9885917890"
+}
+
+{
   "title": "Learn FastAPI",
   "description": "Because it's Awesome",
   "priority": 5,
